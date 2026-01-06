@@ -1,0 +1,35 @@
+---
+- name: check if thp disabled
+  command: grep -Fw "[never]" /sys/kernel/mm/transparent_hugepage/enabled
+  register: thp_status
+  ignore_errors: yes
+
+- name: check if thp defrag disabled
+  command: grep -Fw "[never]" /sys/kernel/mm/transparent_hugepage/defrag
+  register: thp_defrag_status
+  ignore_errors: yes
+
+- name: Copy disable_thp.service file to host
+  ansible.builtin.copy:
+    src: disable_thp.service
+    dest: /etc/systemd/system/disable_thp.service
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  register: daemon_reload_needed
+  when: thp_status.rc != 0 or thp_defrag_status.rc != 0
+
+- name: Reload daemon
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  when: 
+    - daemon_reload_needed is defined
+    - daemon_reload_needed.changed
+
+- name: Enable and start service
+  ansible.builtin.systemd:
+    name: disable_thp
+    enabled: yes
+    state: started
+  when: thp_status.rc !=0 or thp_defrag_status.rc != 0

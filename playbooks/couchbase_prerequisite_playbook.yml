@@ -1,0 +1,6 @@
+---
+- name: Update kernal params as per Couchbase Prerequesite 
+  hosts: all
+  become: true
+  roles:
+    - couchbase_prerequisite

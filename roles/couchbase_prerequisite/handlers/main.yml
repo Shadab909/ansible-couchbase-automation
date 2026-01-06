@@ -1,0 +1,9 @@
+---
+- name: reboot_host
+  reboot:
+    msg: "Rebooting to apply NUMA kernel changes"
+    reboot_timeout: 600
+
+- name: reload_daemon
+  ansible.builtin.systemd:
+    daemon_reload: true

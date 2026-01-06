@@ -1,0 +1,6 @@
+---
+- name: run install_python role
+  hosts: all
+  become: true
+  roles:
+    - install_python

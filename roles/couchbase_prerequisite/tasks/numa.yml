@@ -1,0 +1,24 @@
+---
+- name: Check NUMA for Linux
+  command: grep "numa=off" /proc/cmdline
+  register: numa_value
+  ignore_errors: yes
+ 
+- name: Disable NUMA for Debian Linux
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX="(.*)"'
+    line: 'GRUB_CMDLINE_LINUX="\1 numa=off"'
+    backrefs: yes
+    backup: yes
+    notify: reboot_host
+  when: numa_value.rc != 0 and ansible_os_family == "Debian"
+
+- name: Update GRUB configuration for Debian Linux
+  command: upgrade-grub
+  when: numa_value.rc != 0 and ansible_os_family == "Debian"
+
+- name: Diable NUMA for RedHat Linux
+  command: grubby --update-kernel=ALL --args="numa=off"
+  notify: reboot_host
+  when: numa_value.rc != 0 and ansible_os_family == "RedHat"

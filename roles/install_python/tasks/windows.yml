@@ -1,0 +1,5 @@
+---
+- name: include python runtime and pip on windows machine
+  win_chocolatey:
+    name: python
+    state: present

@@ -1,0 +1,9 @@
+---
+- name: Update Swapiness
+  include_tasks: swappiness.yml
+
+- name: Update NUMA
+  include_tasks: numa.yml
+
+- name: Update THP and THP Defrag
+  include_tasks: thp.yml

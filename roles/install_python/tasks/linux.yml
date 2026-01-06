@@ -1,0 +1,7 @@
+---
+- name: install python runtime and pip on linux machine
+  package:
+    name:
+      - python3
+      - python3-pip
+    state: present
