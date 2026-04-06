@@ -2,7 +2,7 @@
 
 This repository contains a **production-oriented Ansible setup** to prepare Linux servers for running **Couchbase** by enforcing kernel, OS, and runtime prerequisites in an **idempotent and repeatable** way.
 
-The project is designed and implemented from scratch to reflect **real-world DevOps / SRE practices**, not lab shortcuts.
+The project is designed and implemented from scratch to reflect **real-world DevOps / SRE practices**.
 
 ---
 
@@ -17,19 +17,19 @@ The project is designed and implemented from scratch to reflect **real-world Dev
 ---
 
 ## 🏗️ Architecture Overview
-Control Node (WSL - Rocky Linux)
+Control Node (Ubuntu Linux)
 |
 | SSH (key-based)
 |
 +------------------------------+
-| Managed Nodes (VMs) |
-| |
-| cb1, cb2, cb3, cb4 |
-| Rocky Linux / Debian |
+| Managed Nodes (EC2 instance) |
+|                              |
+| cb1, cb2, cb3, cb4           |
+| Amazon Linux / Ubuntu        |
 +------------------------------+
 
-- **Control Node**: WSL (Linux)
-- **Managed Nodes**: VirtualBox VMs
+- **Control Node**: Ubuntu (Linux)
+- **Managed Nodes**: EC2 instances
 - **Access**: Passwordless SSH
 - **Privilege Escalation**: sudo (NOPASSWD)
 
@@ -40,8 +40,7 @@ Control Node (WSL - Rocky Linux)
 ansible/
 ├── ansible.cfg
 ├── inventories/
-│ └── dev/
-│ └── hosts.ini
+│ └── aws_ec2.yml
 ├── playbooks/
 │ ├── install_python_playbook.yml
 │ └── couchbase_prerequisite_playbook.yml
@@ -49,8 +48,6 @@ ansible/
 │ ├── install_python/
 │ │ └── tasks/
 │ │ ├── main.yml
-│ │ ├── linux.yml
-│ │ └── windows.yml
 │ └── couchbase_prerequisite/
 │ ├── tasks/
 │ │ ├── main.yml
@@ -75,8 +72,8 @@ ansible/
 
 **Highlights**
 - OS-specific task separation
-- Uses `dnf`, `apt`, and Windows modules
-- Conditional execution using Ansible facts
+- Uses `yum`, `apt`
+- Execution using Ansible raw module
 
 ---
 
